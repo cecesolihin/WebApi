@@ -1,12 +1,8 @@
-﻿using System;
+﻿using OrderApp.Models;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
-using System.Web.Mvc;
-using OrderApp.Models;
 
 namespace OrderApp.Controllers.Api
 {
@@ -24,19 +20,20 @@ namespace OrderApp.Controllers.Api
             return Ok(listData);
         }
         [System.Web.Http.HttpGet]
-        public IHttpActionResult ProductAll(string productId, string productName) //https://localhost:44355/api/products?ProductId=PR0001&ProductName=
+        public IList<Product> ProductAll(string productId, string productName) //https://localhost:44355/api/products?ProductId=PR0001&ProductName=
         {
             var sql = "exec [dbo].[Sp_Product_Search] @ProductId, @ProductName";
             var listData = db.Database.SqlQuery<Product>(sql, new SqlParameter("@ProductId", string.IsNullOrEmpty(productId) ? "" : productId)
                                                             , new SqlParameter("@ProductName", string.IsNullOrEmpty(productName) ? "" : productName)).ToList();
-            return Ok(listData);
+            
+            return listData;
         }
         [System.Web.Http.HttpGet]
-        public IHttpActionResult ProductById(string productid)//https://localhost:44355/api/products?ProductId=PR0005
+        public IList<Product> ProductById(string productid)//https://localhost:44355/api/products?ProductId=PR0005
         {
             var sql = "exec [dbo].[Sp_Product_ById] @ProductId";
             var listData = db.Database.SqlQuery<Product>(sql, new SqlParameter("@ProductId", string.IsNullOrEmpty(productid) ? "" : productid)).ToList();
-            return Ok(listData);
+            return listData;
         }
         [System.Web.Http.HttpPost]
         public IHttpActionResult AddProduct(string productName, string price)//https://localhost:44355/api/products?ProductName=tes2&Price=23000

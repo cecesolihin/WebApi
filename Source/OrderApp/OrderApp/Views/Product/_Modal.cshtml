@@ -1,0 +1,98 @@
+﻿<div id="ModalProduct" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Form Product</h5>
+
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="form-group productId">
+                                    <label class="col-md-4"> Product Id</label>
+                                    <input type="text" id="txtProductId" class="form-control" disabled style="width:180px" />
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4"> Product Name</label>
+                                    <textarea type="text" id="txtProductName" class="form-control" style="width:180px" ></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-4"> Price</label>
+                                    <input type="text" id="txtPrice" class="form-control" style="width:180px" />
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                
+                            </div>
+                            <div class="col-md-6 text-right">
+                        
+                            </div>
+                        </div>
+                        <br />
+                        <br />
+                        <div class="row">
+                            <div class="col-md-6">
+                                
+                            </div>
+                            <div class="col-md-6 text-right">
+                                <button type="button" class="btn btn-danger" id="btnCancel" style="width:80px" onclick="OnCancel_click()">Cancel</button>
+                                <button type="button" class="btn btn-primary" id="btnsaveAdd" style="width:80px" onclick="OnSave_click('ADD')">Save</button>
+                                <button type="button" class="btn btn-primary" id="btnsaveUpdate" style="width:80px" onclick="OnSave_click('UPDATE')">Update</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+   
+        </div>
+    </div>
+</div>
+<div id="ModalDeleteProduct" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+
+            </div>
+            <div class="modal-body">
+                <div class="panel panel-default">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group productId">
+                                <label class="col-md-4"> Product Id</label>
+                                <input type="text" id="delProductId" class="form-control" disabled style="width:180px" />
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4"> Product Name</label>
+                                <textarea type="text" id="delProductName" class="form-control" disabled style="width:180px"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-md-4"> Price</label>
+                                <input type="text" id="delPrice" class="form-control" disabled style="width:180px" />
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <br />
+                    <br />
+                    <div class="row">
+                        <div class="col-md-6">
+
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <button type="button" class="btn btn-danger" id="btnCancelDelete" style="width:80px" onclick="OnCancelDelete_click()">Cancel</button>
+                            <button type="button" class="btn btn-primary" id="btnDelete" style="width:80px" onclick="OnDelete_click()">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

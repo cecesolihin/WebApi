@@ -142,7 +142,9 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\Api\CustomersController.cs" />
     <Compile Include="Controllers\Api\ProductsController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -224,6 +226,16 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Customer\_GridView.cshtml" />
+    <Content Include="Views\Customer\_SearchForm.cshtml" />
+    <Content Include="Views\Customer\_Modal.cshtml" />
+    <Content Include="Views\Customer\_Pagination.cshtml" />
+    <Content Include="Views\Product\_GridView.cshtml" />
+    <Content Include="Views\Product\_Modal.cshtml" />
+    <Content Include="Views\Product\_Pagination.cshtml" />
+    <Content Include="Views\Product\_SearchForm.cshtml" />
+    <Content Include="Views\Product\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

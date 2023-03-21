@@ -1,0 +1,133 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<link href="~/Content/bootstrap 4.5.3/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.5.1/jquery-3.5.1.min.js"></script>
+<script src="~/Content/bootstrap 4.5.3/js/bootstrap.bundle.js"></script>
+<script src="~/Content/bootstrap 4.5.3/js/bootstrap.min.js"></script>
+<link href="~/Content/bootstrap 4.5.3/css/font-awesome.min.css" rel="stylesheet" />
+<script src="~/Scripts/popper.min.js"></script>
+@Html.Partial("_SearchForm")
+@Html.Partial("_Modal")
+<div id="gridtable">
+    @Html.Partial("_GridView")
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        onSearch();
+        
+    });
+    function btnSearch_onClick() {
+
+        onSearch();
+    }
+    function onSearch() {
+        $('#gridProduct tbody').children('tr').remove();
+        var productId = $('#ProductId-search').val();
+        var productName = $('#ProductName-search').val();
+        //alert(productId);
+        $.ajax({
+            url: "/api/products/productall?productid=" + productId + "&productname=" + productName,
+            type: "GET",
+           // contentType: "application/json;charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+                //alert(data);
+                console.log(data);
+                var bodyTable = "";
+                var number = 1;
+                if (data.length>=1) {
+                    for (var i = 0; i < data.length; i++) {
+                        bodyTable += '<tr><td style="width:30px; text-align:center">' + number + '</td>' +
+                            '<td style="width:100px; text-align:center">' + data[i].ProductId + '</td>' +
+                            '<td style="width:150px;">' + data[i].ProductName + '</td>' +
+                            '<td style="width:100px;text-align:right">' + data[i].Price + '</td>' +
+                            '<td style="width:100px;text-align:center">' +
+                            '<a href="#" id="btnEdit'+i+'" onclick="getUpdatePopUp('+i+')" style="color:#2B7316;" attr-productId="' + data[i].ProductId+'" title="Edit" class="">Edit</a> &nbsp;'+
+                            /*'<a href="#" id="btnDetail" onclick="getDetailPopup()" style="color:#2B7316;" attr-productId="' + data[i].ProductId +'" title="Detail">Detail</a> &nbsp;'+*/
+                            '<a href="#" id="btnDelete'+i+'" onclick="getDeletePopUp('+i+')" style="color:#2B7316;" attr-productId="' + data[i].ProductId +'" title="Delete">Delete</a>'+
+                            '</td ></tr > ';
+                        number++;
+                    }
+                }
+                else {
+                    bodyTable = '<tr><td colspan = "5" > data not Found</td></tr>';
+                }
+
+                $('#gridProduct tbody').append(bodyTable);
+            }
+        });
+    }
+    
+    function btnAdd_onClick() {
+        $('.productId').hide();
+        $('#btnsaveUpdate').hide();
+        $('#ModalProduct').modal('show');
+    }
+    function getUpdatePopUp(id) {
+        var productId = $('#btnEdit'+id).attr('attr-productid');
+        alert(productId);
+        $.ajax({
+            url: "/api/products/productbyid?productid=" + productId,
+            type: "GET",
+            dataType: "Json",
+            success: function (data) {
+                $('#txtProductId').val(data[0].ProductId);
+                $('#txtProductName').val(data[0].ProductName);
+                $('#txtPrice').val(data[0].Price);
+
+                $('.productId').show();
+                $('#btnsaveUpdate').show();
+                $('#btnsaveAdd').hide();
+                $('#ModalProduct').modal('show');
+            }
+        });
+
+    }
+    function getDetailPopup(productId) {
+        var productId = $('#btnDetail').attr('attr-productid');
+        alert('getDetailPopup ' + productId);
+    }
+    function getDeletePopUp(id) {
+        var productId = $('#btnDelete' + id).attr('attr-productid');
+
+        $.ajax({
+            url: "/api/products/productbyid?productid=" + productId,
+            type: "GET",
+            dataType: "Json",
+            success: function (data) {
+                $('#delProductId').val(data[0].ProductId);
+                $('#delProductName').val(data[0].ProductName);
+                $('#delPrice').val(data[0].Price);
+
+                $('#ModalDeleteProduct').modal('show');
+            }
+        });
+
+    }
+    function OnCancel_click() {
+        $('#txtProductName').val('');
+        $('#txtPrice').val('');
+        $('#ModalProduct').modal('hide');
+    }
+    function OnSave_click(action) {
+        if (action=='ADD') {
+
+        }
+        else {
+                
+        }
+    }
+    function OnDelete_click() {
+        var productId =$('#delProductId').val();
+        if (confirm('Are you sure to delete this item data')) {
+            alert(productId);
+            
+        }
+    }
+    function OnCancelDelete_click() {
+        $('#ModalDeleteProduct').modal('hide');
+    }
+</script>
+
