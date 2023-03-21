@@ -69,7 +69,7 @@
     }
     function getUpdatePopUp(id) {
         var CustomerId = $('#btnEdit'+id).attr('attr-Customerid');
-        alert(CustomerId);
+        //alert(CustomerId);
         $.ajax({
             url: "/api/Customers/Customerbyid?Customerid=" + CustomerId,
             type: "GET",
@@ -116,22 +116,74 @@
         $('#ModalCustomer').modal('hide');
     }
     function OnSave_click(action) {
-        if (action=='ADD') {
-
+        var customerId = $('#txtCustomerId').val();
+        var customerName = $('#txtCustomerName').val();
+        var address = $('#txtAddress').val();
+        var city = $('#txtCity').val();
+        if (action == 'ADD') {
+            $.ajax({
+                url: "/api/customers?customername=" + customerName + "&address=" + address+"&city="+city,
+                type: "POST",
+                dataType: "Json",
+                success: function (responseMessage) {
+                    //console.log(responseMessage);
+                    $('#ModalCustomer').modal('hide');
+                    onSearch();
+                },
+                error: function (responseMessage) {
+                    console.log(responseMessage);
+                    var mssg = 'ERROR : ' + responseMessage.status + '\n' + responseMessage.responseJSON;
+                    alert(mssg);
+                }
+            });
         }
         else {
-                
+            $.ajax({
+                url: "/api/customers?customerId=" + customerId + "&customername=" + customerName + "&address=" + address + "&city=" + city,
+                type: "PUT",
+                dataType: "Json",
+                success: function (responseMessage) {
+                    //console.log(responseMessage);
+                    $('#ModalCustomer').modal('hide');
+                    onSearch();
+                },
+                error: function (responseMessage) {
+                    console.log(responseMessage);
+                    var mssg = 'ERROR : ' + responseMessage.status + '\n' + responseMessage.responseJSON;
+                    alert(mssg);
+                }
+            });
         }
     }
     function OnDelete_click() {
         var customerId =$('#delCustomerId').val();
         if (confirm('Are you sure to delete this item data')) {
-            alert(customerId);
-            
+            //alert(customerId);
+            $.ajax({
+                url: "/api/customers?customerId=" + customerId,
+                type: "DELETE",
+                dataType: "Json",
+                success: function (responseMessage) {
+                    //console.log(responseMessage);
+                    $('#ModalDeleteCustomer').modal('hide');
+                    onSearch();
+                },
+                error: function (responseMessage) {
+                    console.log(responseMessage);
+                    var mssg = 'ERROR : ' + responseMessage.status + '\n' + responseMessage.responseJSON;
+                    alert(mssg);
+                }
+            });
         }
     }
     function OnCancelDelete_click() {
         $('#ModalDeleteCustomer').modal('hide');
+    }
+    function btnClear_onClick() {
+        $('#CustomerId-search').val('');
+        $('#CustomerName-search').val('');
+        $('#City-search').val('');
+        onSearch();
     }
 </script>
 

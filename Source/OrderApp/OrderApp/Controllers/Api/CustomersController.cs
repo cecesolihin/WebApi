@@ -28,32 +28,68 @@ namespace OrderApp.Controllers.Api
             return listData;
         }
         [System.Web.Http.HttpPost]
-        public IHttpActionResult AddCustomer(string customerName, string address, string city)
+        public HttpResponseMessage AddCustomer(string customerName, string address, string city)
         {
-            string customerId = string.Empty;
-            var sql = "exec [dbo].[Sp_Customer_Insert] @CustomerId, @CustomerName,@Address,@City";
-            var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@CustomerId", customerId)
-                                                        , new SqlParameter("@CustomerName", string.IsNullOrEmpty(customerName) ? "" : customerName)
-                                                        , new SqlParameter("@Address", string.IsNullOrEmpty(address) ? "" : address)
-                                                        , new SqlParameter("@City", city));
-            return Ok();
+            HttpResponseMessage responseMessage = new HttpResponseMessage();
+            try
+            {
+                string customerId = string.Empty;
+                var sql = "exec [dbo].[Sp_Customer_Insert] @CustomerId, @CustomerName,@Address,@City";
+                var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@CustomerId", customerId)
+                                                            , new SqlParameter("@CustomerName", string.IsNullOrEmpty(customerName) ? "" : customerName)
+                                                            , new SqlParameter("@Address", string.IsNullOrEmpty(address) ? "" : address)
+                                                            , new SqlParameter("@City", city));
+                responseMessage = Request.CreateResponse(HttpStatusCode.OK, "success");
+            }
+            catch (System.Exception ex)
+            {
+
+
+                responseMessage = Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
+            return responseMessage;
         }
         [System.Web.Http.HttpPut]
-        public IHttpActionResult UpdateCustomer(string customerId, string customerName, string address, string city)
+        public HttpResponseMessage UpdateCustomer(string customerId, string customerName, string address, string city)
         {
-            var sql = "exec [dbo].[Sp_Customer_Update] @CustomerId, @CustomerName,@Address,@City";
-            var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@CustomerId", customerId)
-                                                        , new SqlParameter("@CustomerName", string.IsNullOrEmpty(customerName) ? "" : customerName)
-                                                        , new SqlParameter("@Address", string.IsNullOrEmpty(address) ? "" : address)
-                                                        , new SqlParameter("@City", city));
-            return Ok();
+            HttpResponseMessage responseMessage = new HttpResponseMessage();
+            try
+            {
+                var sql = "exec [dbo].[Sp_Customer_Update] @CustomerId, @CustomerName,@Address,@City";
+                var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@CustomerId", customerId)
+                                                            , new SqlParameter("@CustomerName", string.IsNullOrEmpty(customerName) ? "" : customerName)
+                                                            , new SqlParameter("@Address", string.IsNullOrEmpty(address) ? "" : address)
+                                                            , new SqlParameter("@City", city));
+                responseMessage = Request.CreateResponse(HttpStatusCode.OK, "success");
+            }
+            catch (System.Exception ex)
+            {
+
+
+                responseMessage = Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
+            return responseMessage;
         }
         [System.Web.Http.HttpDelete]
-        public IHttpActionResult DeleteCustomer(string customerId)
+        public HttpResponseMessage DeleteCustomer(string customerId)
         {
-            var sql = "exec [dbo].[Sp_Customer_Delete] @CustomerId";
-            var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@CustomerId", customerId));
-            return Ok();
+            HttpResponseMessage responseMessage = new HttpResponseMessage();
+            try
+            {
+                var sql = "exec [dbo].[Sp_Customer_Delete] @CustomerId";
+                var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@CustomerId", customerId));
+                responseMessage = Request.CreateResponse(HttpStatusCode.OK, "success");
+            }
+            catch (System.Exception ex)
+            {
+
+
+                responseMessage = Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
+            return responseMessage;
         }
     }
 }

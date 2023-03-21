@@ -67,7 +67,7 @@
     }
     function getUpdatePopUp(id) {
         var productId = $('#btnEdit'+id).attr('attr-productid');
-        alert(productId);
+        //alert(productId);
         $.ajax({
             url: "/api/products/productbyid?productid=" + productId,
             type: "GET",
@@ -112,22 +112,73 @@
         $('#ModalProduct').modal('hide');
     }
     function OnSave_click(action) {
+       
+        var productId = $('#txtProductId').val();
+        var productName = $('#txtProductName').val();
+        var price = $('#txtPrice').val();
         if (action=='ADD') {
-
+            $.ajax({
+                url: "/api/products?productname=" + productName + "&price="+price,
+                type: "POST",
+                dataType: "Json",
+                success: function (responseMessage) {
+                    //console.log(responseMessage);
+                    $('#ModalProduct').modal('hide');
+                    onSearch();
+                },
+                error: function (responseMessage) {
+                    console.log(responseMessage);
+                    var mssg = 'ERROR : ' + responseMessage.status + '\n' + responseMessage.responseJSON;
+                    alert(mssg);
+                }
+            });
         }
         else {
-                
+            $.ajax({
+                url: "/api/products?productId=" + productId+"&productname=" + productName + "&price=" + price,
+                type: "PUT",
+                dataType: "Json",
+                success: function (responseMessage) {
+                    //console.log(responseMessage);
+                    $('#ModalProduct').modal('hide');
+                    onSearch();
+                },
+                error: function (responseMessage) {
+                    console.log(responseMessage);
+                    var mssg = 'ERROR : ' + responseMessage.status + '\n' + responseMessage.responseJSON;
+                    alert(mssg);
+                }
+            });
         }
     }
     function OnDelete_click() {
         var productId =$('#delProductId').val();
         if (confirm('Are you sure to delete this item data')) {
-            alert(productId);
-            
+            //alert(productId);
+            $.ajax({
+                url: "/api/products?productId=" + productId ,
+                type: "DELETE",
+                dataType: "Json",
+                success: function (responseMessage) {
+                    //console.log(responseMessage);
+                    $('#ModalDeleteProduct').modal('hide');
+                    onSearch();
+                },
+                error: function (responseMessage) {
+                    console.log(responseMessage);
+                    var mssg = 'ERROR : ' + responseMessage.status + '\n' + responseMessage.responseJSON;
+                    alert(mssg);
+                }
+            });
         }
     }
     function OnCancelDelete_click() {
         $('#ModalDeleteProduct').modal('hide');
+    }
+    function btnClear_onClick() {
+        $('#ProductId-search').val('');
+        $('#ProductName-search').val('');
+        onSearch();
     }
 </script>
 

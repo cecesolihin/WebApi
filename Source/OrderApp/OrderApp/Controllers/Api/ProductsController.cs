@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Web.Http;
 
 namespace OrderApp.Controllers.Api
@@ -36,30 +38,73 @@ namespace OrderApp.Controllers.Api
             return listData;
         }
         [System.Web.Http.HttpPost]
-        public IHttpActionResult AddProduct(string productName, string price)//https://localhost:44355/api/products?ProductName=tes2&Price=23000
+        //public IHttpActionResult AddProduct(string productName, string price)//https://localhost:44355/api/products?ProductName=tes2&Price=23000
+        //{
+        //    string productId= string.Empty;
+        //    var sql = "exec [dbo].[Sp_Product_Insert] @ProductId, @ProductName,@Price";
+        //    var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@ProductId", productId)
+        //                                                , new SqlParameter("@ProductName", string.IsNullOrEmpty(productName) ? "" : productName)
+        //                                                , new SqlParameter("@Price", string.IsNullOrEmpty(price) ? "" : price));
+        //    return Ok();
+        //}
+        public HttpResponseMessage AddProduct(string productName, string price)
         {
-            string productId= string.Empty;
-            var sql = "exec [dbo].[Sp_Product_Insert] @ProductId, @ProductName,@Price";
-            var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@ProductId", productId)
-                                                        , new SqlParameter("@ProductName", string.IsNullOrEmpty(productName) ? "" : productName)
-                                                        , new SqlParameter("@Price", string.IsNullOrEmpty(price) ? "" : price));
-            return Ok();
+            string productId = string.Empty;
+            HttpResponseMessage responseMessage =new HttpResponseMessage();
+            try
+            {
+                var sql = "exec [dbo].[Sp_Product_Insert] @ProductId, @ProductName,@Price";
+                var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@ProductId", productId)
+                                                            , new SqlParameter("@ProductName", string.IsNullOrEmpty(productName) ? "" : productName)
+                                                            , new SqlParameter("@Price", string.IsNullOrEmpty(price) ? "" : price));
+                 responseMessage = Request.CreateResponse(HttpStatusCode.OK, "success");
+            }
+            catch (System.Exception ex)
+            {
+
+                
+                 responseMessage = Request.CreateErrorResponse(HttpStatusCode.InternalServerError,ex.Message);
+            }
+           
+            return responseMessage;
         }
         [System.Web.Http.HttpPut]
-        public IHttpActionResult UpdateProduct(string productId,string productName, string price)
+        public HttpResponseMessage UpdateProduct(string productId,string productName, string price)
         {
-            var sql = "exec [dbo].[Sp_Product_Update] @ProductId, @ProductName,@Price";
-            var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@ProductId", productId)
-                                                        , new SqlParameter("@ProductName", string.IsNullOrEmpty(productName) ? "" : productName)
-                                                        , new SqlParameter("@Price", string.IsNullOrEmpty(price) ? "" : price));
-            return Ok();
+            HttpResponseMessage responseMessage = new HttpResponseMessage();
+            try
+            {
+                var sql = "exec [dbo].[Sp_Product_Update] @ProductId, @ProductName,@Price";
+                var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@ProductId", productId)
+                                                            , new SqlParameter("@ProductName", string.IsNullOrEmpty(productName) ? "" : productName)
+                                                            , new SqlParameter("@Price", string.IsNullOrEmpty(price) ? "" : price));
+                responseMessage = Request.CreateResponse(HttpStatusCode.OK, "success");
+            }
+            catch (System.Exception ex)
+            {
+
+                responseMessage = Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
+            return responseMessage;
         }
         [System.Web.Http.HttpDelete]
-        public IHttpActionResult DeleteProduct(string productId)//https://localhost:44355/api/products?productId=PR0009
+        public HttpResponseMessage DeleteProduct(string productId)//https://localhost:44355/api/products?productId=PR0009
         {
-            var sql = "exec [dbo].[Sp_Product_Delete] @ProductId";
-            var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@ProductId", productId));
-            return Ok();
+            HttpResponseMessage responseMessage = new HttpResponseMessage();
+            try
+            {
+                var sql = "exec [dbo].[Sp_Product_Delete] @ProductId";
+                var exec = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@ProductId", productId));
+                responseMessage = Request.CreateResponse(HttpStatusCode.OK, "success");
+            }
+            catch (System.Exception ex)
+            {
+
+                responseMessage = Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+
+            return responseMessage;
         }
     }
 }
