@@ -1,0 +1,64 @@
+﻿
+@using System;
+@using OrderApp.Models;
+@{
+    IList<OrderListVm> lisData = (IList<OrderListVm>)ViewData["listdata"];
+    
+}
+
+<div class="container">
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="" style="overflow-x:scroll; ">
+                <table class="table table-striped table-bordered" style="font-size:12px">
+                    <thead>
+                        <tr>
+                            <th style="width:50px;">No</th>
+                            <th style="width:100px;">Order No</th>
+                            <th style="width:100px;">Order Date</th>
+                            <th style="width:100px;">Customer Name</th>
+                            <th style="width:100px;">ShipName</th>
+                            <th style="width:100px;">Total Price</th>
+                            <th style="width:100px;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (lisData == null || lisData.Count == 0)
+                        {
+                            <tr>
+                                <td colspan="7">data not Found</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            foreach (var data in lisData)
+                            {
+                                <tr>
+                                    <td style="width:50px;">@data.No</td>
+                                    <td style="width:100px;">@data.OrderId</td>
+                                    <td style="width:100px;">@data.OrderDate</td>
+                                    <td style="width:100px;">@data.CustomerName</td>
+                                    <td style="width:100px;">@data.ShipName</td>
+                                    <td style="width:100px;">@data.TotalPrice</td>
+                                    <td style="width:100px;">
+                                      
+                                        <a href="#" onclick="getUpdatePopUp('@data.OrderId')" style="color:#2B7316;" title="Edit" class="">Edit</a> &nbsp;
+                                        <a href="#" onclick="getDetailPopup('@data.OrderId')" style="color:#2B7316;" title="Detail">Detail</a> &nbsp;
+                                        <a href="#" onclick="getDeletePopUp('@data.OrderId')" style="color:#2B7316;" title="Delete">Delete</a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        <tr>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div>
+                @Html.Partial("_Pagination")
+
+            </div>
+        </div>
+    </div>
+</div>

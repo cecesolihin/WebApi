@@ -1,0 +1,64 @@
+﻿@using OrderApp.Models;
+@{
+    Paging _page = (Paging)ViewData["Paging"];
+}
+<div class="row">
+    <div class="col-xs-12 col-sm-11 col-md-11">
+        <nav aria-label="...">
+            @if ((_page != null) && _page.CountData > 0)
+            {
+                <ul class="pagination">
+                    @*<li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>*@
+                    <li>
+                        <span class="_pagination-label">Showing @_page.StartData to @_page.EndData of @_page.CountData row(s)</span>
+                    </li>
+                    <li><a href="javascript: onCallback(@_page.First, $('#cbosizegrid').val())">First</a></li>
+                    <li><a href="javascript: onCallback(@_page.Prev, $('#cbosizegrid').val())">Prev</a></li>
+                    @for (int p = 1; p <= @_page.CountPage; p++)
+                    {
+                        if ((p >= @_page.MinPage) && (p <= @_page.MaxPage))
+                        {
+                            if (@p == _page.PositionPage)
+                            {
+                                <li class="active"><a href="javascript: onCallback(@p, $('#cbosizegrid').val())">@p</a></li>
+                            }
+                            else
+                            {
+                                <li><a href="javascript: onCallback(@p, $('#cbosizegrid').val())">@p</a></li>
+                            }
+                        }
+                    }
+
+                    <li><a href="javascript: onCallback(@_page.Next, $('#cbosizegrid').val())">Next</a></li>
+                    <li><a href="javascript: onCallback(@_page.Last, $('#cbosizegrid').val())">Last</a></li>
+                    <li><span class=""></span></li>
+                    <li>
+                        <span class="_pagination-goto">
+                            <input type="text" class="_number-only" maxlength="4" id="txtgo" />
+                        </span>
+                    </li>
+                    <li>
+                        <span class="_pagination-goto">
+                            <button id="btngo" type="button" class="_btn-go" onclick="javascript: onCallback($('#txtgo').val(), $('#cbosizegrid').val());">Go</button>
+                        </span>
+                    </li>
+                </ul>
+                <input id="txtmaxpg" value="@_page.CountData" type="text" class="hidden" />
+            }
+
+        </nav>
+    </div>
+    <div class="col-xs-12 col-sm-1 col-md-1 text-right">
+        <select class="pagination" id="cbosizegrid" onchange="onChangesize()" style="width:50px;height:30px;">
+
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+    </div>
+</div>
+
+

@@ -1,0 +1,56 @@
+﻿@using System;
+@using OrderApp.Models;
+@{ 
+    IList<Customer> customers = (IList<Customer>)ViewData["listCustomer"];
+}
+<div class="container">
+
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="panel panel-default">
+                        <br />
+                        <div class="form-group">
+                            <label class="control-label text-muted col-md-3">Order No</label>
+                            <input type="text" id="OrderId-search" class="form-control" style="width:180px" />
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label text-muted col-md-3">Customer</label>
+                            @*<input type="text" id="CustomerName-search" class="form-control" style="width:180px" />*@
+                        <select class="form-control chosen-select" id="Customer-search" style="width:180px">
+                            <option value=""></option>
+                            @*@if (customers == null)
+                            {
+                                <option value=""></option>
+                            }
+                            else
+                            {
+                                foreach (var item in customers)
+                                {
+                                    <option value="@item.CustomerId">@item.CustomerId - @item.CustomerName</option>
+                                }
+                            }*@
+
+                        </select>
+                        </div>
+                        <div class="form-group text-right">
+                            <button type="button" class="btn btn-primary " id="btnSearch" onclick="btnSearch_onClick()" style="width:100px"> Filter</button> &nbsp;&nbsp;
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10">
+
+                    </div>
+                    <div class="col-2 text-right">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary " id="btnNew" onclick="btnAdd_onClick()" style="width:100px"> Add Order</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

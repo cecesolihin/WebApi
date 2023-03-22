@@ -1,0 +1,295 @@
+﻿<link href="~/Content/bootstrap 4.5.3/css/bootstrap.min.css" rel="stylesheet" />
+<script src="~/Scripts/jquery-3.5.1/jquery-3.5.1.min.js"></script>
+<script src="~/Content/bootstrap 4.5.3/js/bootstrap.bundle.js"></script>
+<script src="~/Content/bootstrap 4.5.3/js/bootstrap.min.js"></script>
+<link href="~/Content/bootstrap 4.5.3/css/font-awesome.min.css" rel="stylesheet" />
+<script src="~/Scripts/popper.min.js"></script>
+@Html.Partial("_SearchForm")
+@Html.Partial("_Modal")
+@Html.Partial("_OrderEntry")
+<div id="gridtable">
+    @Html.Partial("_GridView")
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        getDataCustomer();
+        SearchCriteria(1, 10);
+    });
+    function getDataCustomer() {
+        var optionCustomer = "";
+        $.ajax({
+            url: "/OrderList/GetAllCustomer",
+            type: "GET",
+            data: {
+            },
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    optionCustomer += '<option value="' + data[i].CustomerId + '">' + data[i].CustomerId +' - '+ data[i].CustomerName + '</option>';
+                }
+                $('#Customer-search').append(optionCustomer);
+            },
+            error: function (data) {
+                alert("Error :");
+            }
+        });
+
+
+        console.log(optionCustomer);
+    }
+    function onChangesize() {
+        var size = $("#cbosizegrid").val();
+        SearchCriteria(1, size)
+    }
+    function onCallback(page, size) {
+        var mx = $("#txtmaxpg").val();
+        console.log(mx);
+        console.log(page);
+        console.log(size);
+
+        if ((page <= mx) && (page > 0)) {
+            SearchCriteria(page, size);
+        }
+        else {
+            $("#selected-0-confirm").modal();
+            $("#warningModal").html("Page not found");
+        }
+    }
+    function SearchCriteria(page, size) {
+
+        $.ajax({
+            url: "/OrderList/Search",
+            type: "GET",
+            data: {
+                OrderId: $('#OrderId-search').val(),
+                CustomerId: $('#Customer-search').val(),
+                page: page,
+                size: size
+            },
+            success: function (data) {
+                $('#gridtable').html(data);
+            },
+            error: function (data) {
+                alert("Error :");
+            }
+        });
+    }
+    function getDeletePopUp(orderid) {
+        if (confirm('Are you sure to delete this item data')) {
+            // Save it!
+           $.ajax({
+            url: "/OrderList/DeleteOrder",
+            type: "POST",
+            data: {
+                OrderId: orderid
+            },
+            success: function (result) {
+                if (result.toLowerCase() == 'success') {
+                        alert('Delete Berhasil');
+                       window.location.href = '@Url.Action("Index","OrderList")';
+                       // window.opener.OrderList();
+                    }
+                    else {
+                        alert(result);
+                    }
+            },
+            error: function (data) {
+                alert("Error :");
+            }
+        });
+        }
+
+    }
+    function btnSearch_onClick() {
+        var size = $("#cbosizegrid").val();
+        SearchCriteria(1, 5);
+    }
+    function btnAdd_onClick() {
+        var CustomerId = '';
+        var CustomerName = '';
+        var City = '';
+        var optionCustomer = "";
+        $.ajax({
+            url: "/api/Customers/Customerall?Customerid=" + CustomerId + "&Customername=" + CustomerName + "&city=" + City,
+            type: "GET",
+            dataType: "json",
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    optionCustomer += '<option value=' + data[i].CustomerId + '>' + data[i].CustomerId + '</option>';
+                    
+                }
+                $('#ModalOrderEntry #ordCustomerId').append(optionCustomer);
+            },
+            
+        });
+
+
+        console.log(optionCustomer);
+        //var op = '<option value="CS001">Nama 1</option><option value="CS002">Nama 2</option><option value="CS003">Nama 3</option><option value="CS004">Nama 4</option><option value="CS005">Nama 5</option>';
+        $('#ModalOrderEntry').modal();
+        $('#btnsaveOrderUpdate').hide();
+        //$('#ModalOrderEntry #txtCustomerId').append(optionCustomer);
+    }
+    function getDetailPopup(orderid) {
+
+        return $.ajax({
+            url: "/OrderList/GetOrderHeaderById",
+            type: "POST",
+            data: { orderid: orderid },
+            success: function (data) {
+                $('#ModalOrderEntry #txtOrderId').val(data[0].OrderId);
+                $('#ModalOrderEntry #txtOrderdate').val(data[0].OrderDate);
+
+                $('#ModalOrderEntry #txtrequireddate').val(data[0].RequiredDate);
+                $('#ModalOrderEntry #txtShipname').val(data[0].ShipName);
+                $('#ModalOrderEntry #txtCustomerId').val(data[0].CustomerId);
+                $('#ModalOrderEntry #txtTotalPrice').val(data[0].TotalPrice);
+                $('#btnAddItem').hide();
+                $('#btnADeleteItem').hide();
+                $('#btnsaveOrderAdd').hide();
+                $('#btnsaveOrderUpdate').hide();
+
+                $.ajax({
+                    url: "/OrderList/GetCustomerById",
+                    type: "POST",
+                    data: { CustomerId: data[0].CustomerId },
+                    success: function (data1) {
+                        $('#ModalOrderEntry #txtCustomerId').val(data1[0].CustomerId);
+                        $('#ModalOrderEntry #txtCompanyName').val(data1[0].CustomerName);
+                        $('#ModalOrderEntry #txtAddress').val(data1[0].Address);
+                        $('#ModalOrderEntry #txtCity').val(data1[0].City);
+
+
+                    }
+                });
+
+                $.ajax({
+                    url: "/OrderList/GetOrderDetailById",
+                    type: "POST",
+                    data: { orderid: orderid },
+                    success: function (data2) {
+                        var formBodyTable = ''
+                        for (var i = 0; i < data2.length; i++) {
+                            formBodyTable += '<tr>' +
+                                '<td > <input type="text" id="txtProducId' + i + '" class="form-control" readonly value="' + data2[i].ProductId + '"/></td>' +
+                                //'<td><select class="form-control chosen-select" id="txtProducId' + i +
+                                //'" onchange="GetProduct(' + i + ')">' +
+                                //'<option value=""></option>' +
+                                //'</select></td>' +
+                                '<td> <input type="text" id="txtProducName' + i + '" class="form-control " readonly  value="' + data2[i].ProductName + '"/></td>' +
+                                '<td> <input type="text" id="txtUnitPrice' + i + '" class="form-control " readonly value="' + data2[i].Price + '"/></td>' +
+                                '<td> <input type="text" id="txtQty' + i + '" class="form-control" readonly onchange="onCalculatePrice(' + i + ')" value="' + data2[i].Qty + '"/></td>' +
+                                '<td> <input type="text" id="txtSubtotal' + i + '" class="form-control" readonly value="' + data2[i].SubTotal + '"/></td>' +
+                                '</tr>';
+                        }
+
+                        $('#tblOrderProduct tbody').append(formBodyTable);
+                    }
+                });
+
+                $('#ModalOrderEntry').modal();
+            }
+        });
+
+
+
+    }
+    function getUpdatePopUp(orderid) {
+
+        //var optionProduct = "";
+        //var optionCustomer = "";
+        //return $.ajax({
+        //    url: "/OrderList/GetAllProduct",
+        //    type: "POST",
+        //    data: {},
+        //    success: function (data) {
+        //        for (var i = 0; i < data.length; i++) {
+        //            var obj = new Object();
+        //            obj.ProductId = data[i].ProductId;
+        //            obj.ProductName = data[i].ProductName;
+        //            obj.Price = data[i].Price;
+        //            dataProduct.push(obj);
+        //            optionProduct += '<option value=' + dataProduct[i].ProductId + '>' + dataProduct[i].ProductName + '</option>';
+        //        }
+
+        //    }
+        //});
+        return $.ajax({
+            url: "/OrderList/GetOrderHeaderById",
+            type: "POST",
+            data: { orderid: orderid },
+            success: function (data) {
+                $('#ModalOrderEntry #txtOrderId').val(data[0].OrderId);
+                $('#ModalOrderEntry #txtOrderdate').val(data[0].OrderDate);
+
+                $('#ModalOrderEntry #txtrequireddate').val(data[0].RequiredDate);
+                $('#ModalOrderEntry #txtShipname').val(data[0].ShipName);
+                $('#ModalOrderEntry #txtCustomerId').val(data[0].CustomerId);
+                $('#ModalOrderEntry #txtTotalPrice').val(data[0].TotalPrice);
+
+
+                $.ajax({
+                    url: "/OrderList/GetCustomerById",
+                    type: "POST",
+                    data: { CustomerId: data[0].CustomerId },
+                    success: function (data1) {
+                        $('#ModalOrderEntry #txtCustomerId').val(data1[0].CustomerId);
+                        $('#ModalOrderEntry #txtCompanyName').val(data1[0].CustomerName);
+                        $('#ModalOrderEntry #txtAddress').val(data1[0].Address);
+                        $('#ModalOrderEntry #txtCity').val(data1[0].City);
+
+
+                    }
+                });
+
+                $.ajax({
+                    url: "/OrderList/GetOrderDetailById",
+                    type: "POST",
+                    data: { orderid: orderid },
+                    success: function (data2) {
+                        var formBodyTable = ''
+                        for (var i = 0; i < data2.length; i++) {
+                            formBodyTable += '<tr>' +
+                                //'<td > <input type="text" id="txtProducId' + i + '" class="form-control" readonly value="' + data2[i].ProductId + '"/></td>' +
+                                '<td><select class="form-control chosen-select" id="txtProducId' + i +
+                                '" onchange="GetProduct(' + i + ')">' +
+                                '<option value="seletected" seletected></option>' +
+                                '</select></td>' +
+                                '<td> <input type="text" id="txtProducName' + i + '" class="form-control " readonly  value="' + data2[i].ProductName + '"/></td>' +
+                                '<td> <input type="text" id="txtUnitPrice' + i + '" class="form-control " readonly value="' + data2[i].Price + '"/></td>' +
+                                '<td> <input type="text" id="txtQty' + i + '" class="form-control"  onchange="onCalculatePrice(' + i + ')" value="' + data2[i].Qty + '"/></td>' +
+                                '<td> <input type="text" id="txtSubtotal' + i + '" class="form-control" readonly value="' + data2[i].SubTotal + '"/></td>' +
+                                '</tr>';
+                        }
+
+                        $('#tblOrderProduct tbody').append(formBodyTable);
+                        for (var i = 0; i < dataProduct.length; i++) {
+                            $('#txtProducId' + i).append(optionProduct);
+                        }
+                    }
+                });
+                $('#ModalOrderEntry #txtOrderId').prop('readonly', true);
+                // $('#ModalOrderEntry #txtCustomerId').prop('readonly', true);
+                $('#ModalOrderEntry').modal();
+                $('#btnsaveOrderAdd').hide();
+                $('#btnsaveOrderUpdate').show();
+                $('#btnAddItem').show();
+                $('#btnADeleteItem').show();
+            }
+        });
+    }
+    function OnBack_click() {
+
+        $('#txtOrderId').val('');
+        $('#txtOrderdate').val('');
+        $('#txtrequireddate').val('');
+        $('#txtShipname').val('');
+
+        $('#txtCustomerId').val('');
+        $('#txtCompanyName').val('');
+        $('#txtAddress').val('');
+        $('#txtCity').val('');
+        $('#tblOrderProduct').children('tbody').children('tr').remove()
+        $('#ModalOrderEntry').modal('hide');
+    }
+</script>
+

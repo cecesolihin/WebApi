@@ -144,6 +144,7 @@
     <Compile Include="Controllers\Api\ProductsController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrderListController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -152,6 +153,8 @@
     <Compile Include="Models\Customer.cs" />
     <Compile Include="Models\OrderDetail.cs" />
     <Compile Include="Models\OrderHeader.cs" />
+    <Compile Include="Models\OrderListVm.cs" />
+    <Compile Include="Models\OrderVm.cs" />
     <Compile Include="Models\Paging.cs" />
     <Compile Include="Models\Product.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -236,6 +239,12 @@
     <Content Include="Views\Product\_Pagination.cshtml" />
     <Content Include="Views\Product\_SearchForm.cshtml" />
     <Content Include="Views\Product\Index.cshtml" />
+    <Content Include="Views\OrderList\Index.cshtml" />
+    <Content Include="Views\OrderList\_GridView.cshtml" />
+    <Content Include="Views\OrderList\_SearchForm.cshtml" />
+    <Content Include="Views\OrderList\_Pagination.cshtml" />
+    <Content Include="Views\OrderList\_OrderEntry.cshtml" />
+    <Content Include="Views\OrderList\_Modal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
