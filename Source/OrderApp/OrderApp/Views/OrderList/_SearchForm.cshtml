@@ -1,6 +1,6 @@
 ﻿@using System;
 @using OrderApp.Models;
-@{ 
+@{
     IList<Customer> customers = (IList<Customer>)ViewData["listCustomer"];
 }
 <div class="container">
@@ -18,22 +18,25 @@
                         <div class="form-group">
                             <label class="control-label text-muted col-md-3">Customer</label>
                             @*<input type="text" id="CustomerName-search" class="form-control" style="width:180px" />*@
-                        <select class="form-control chosen-select" id="Customer-search" style="width:180px">
-                            <option value=""></option>
-                            @*@if (customers == null)
-                            {
+                            <select class="form-control chosen-select" id="Customer-search" style="width:180px">
                                 <option value=""></option>
-                            }
-                            else
-                            {
-                                foreach (var item in customers)
-                                {
-                                    <option value="@item.CustomerId">@item.CustomerId - @item.CustomerName</option>
-                                }
-                            }*@
-
-                        </select>
+                            
+                            </select>
                         </div>
+
+                        <!--<div class="form-group">
+                            <label class="col-md-4"> Order Date</label>-->
+                            @*<input type="date" id="ordOrderdate" class="form-control" style="width:180px" />*@
+                            <!--<div class="form-group">
+                                <div class="input-group date" data-provide="datepicker">
+                                    <input type="text" class="form-control" data-date-format="mm-dd-yyyy">
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+                            </div>-->
+                            @*<p>Date: <input type="text" id="datepicker"></p>*@
+                        <!--</div>-->
                         <div class="form-group text-right">
                             <button type="button" class="btn btn-primary " id="btnSearch" onclick="btnSearch_onClick()" style="width:100px"> Filter</button> &nbsp;&nbsp;
                         </div>

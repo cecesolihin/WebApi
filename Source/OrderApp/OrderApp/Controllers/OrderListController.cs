@@ -115,48 +115,61 @@ namespace OrderApp.Controllers
             string result = string.Empty;
             try
             {
-                //SqlParameter outputTblOrderDetail = CreateSqlParameterOutPutTblOrderDetail("TableOfOrderDetail", data.orderList, "dbo.TableOfOrderDetail");
-
-                if (data.Action.ToString() == "ADD")
-                {
-                    var sql1 = @"SELECT top 1 cast(right(OrderId,4) as int) OrderNo
+                //Generate OrderId
+                var sql = @"SELECT top 1 cast(isnull(right(OrderId,4),'0') as int) OrderNo
                                  , OrderId
                                  ,Cast(OrderDate as varchar) OrderDate
                                  ,CustomerId
                                  ,cast(RequiredDate as varchar) RequiredDate
                                  ,ShipName
                                  ,cast(TotalPrice as varchar) TotalPrice
-                             FROM [dbo].[OrderHeader] order by cast(right(OrderId,4) as int) desc";
-                    IList<OrderHeader> dataOrder = db.Database.SqlQuery<OrderHeader>(sql1).ToList();
-                    var vOrderno = dataOrder[0].OrderNo;
-                    var sequence = vOrderno + 1;
-                    string xOrderNo = data.CustomerId + "0000" + sequence.ToString();
-
-                    for (int i = 0; i < data.orderList.Count; i++)
-                    {
-
-                        var sql = "exec Sp_Insert_OrderDetail @OrderId, @CustomerId, @Productid, @Qty, @SubTotal,@OrderDate,@RequiredDate,@ShipName, @TotalPrice ";
-                        var execquery = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@OrderId", xOrderNo)
-                                                                         , new SqlParameter("@CustomerId", data.CustomerId)
-                                                                         , new SqlParameter("@Productid", data.orderList[i].ProductId)
-                                                                         , new SqlParameter("@Qty", data.orderList[i].Qty)
-                                                                         , new SqlParameter("@SubTotal", data.orderList[i].SubTotal)
-                                                                         , new SqlParameter("@OrderDate", data.OrderDate)
-                                                                         , new SqlParameter("@RequiredDate", data.RequiredDate)
-                                                                         , new SqlParameter("@ShipName", data.ShipName)
-                                                                         , new SqlParameter("@TotalPrice", data.TotalPrice));
-                    }
+                             FROM [dbo].[OrderHeader] order by OrderId desc";
+                var dataOrder = db.Database.SqlQuery<OrderHeader>(sql).ToList();
+                var vOrderno = 0; ;
+                if (dataOrder.Count<1)
+                {
+                    vOrderno = 0;
                 }
                 else
                 {
-                    var sql = "exec Sp_Update_OrderHeader @OrderId,@OrderDate,@RequiredDate,@ShipName, @TotalPrice ";
-                    var execquery = db.Database.ExecuteSqlCommand(sql, new SqlParameter("@OrderId", data.OrderId)
-
-                                                                         , new SqlParameter("@OrderDate", data.OrderDate)
-                                                                         , new SqlParameter("@RequiredDate", data.RequiredDate)
-                                                                         , new SqlParameter("@ShipName", data.ShipName)
-                                                                         , new SqlParameter("@TotalPrice", data.TotalPrice));
+                    vOrderno = dataOrder[0].OrderNo;
                 }
+                //var vOrderno = dataOrder[0].OrderNo;
+                var sequence = vOrderno + 1;
+                double bil = (double)sequence / (double)1000;
+                string xOrderNo = "";
+                if (data.Action=="ADD")
+                {
+                     xOrderNo = data.CustomerId + bil.ToString().Replace(".", "");
+                }
+                else
+                {
+                    xOrderNo = data.OrderId;
+                }
+                //insert/update Order Header
+                var sql2 = "exec Sp_OrderHeader_InsetUpdate @OrderId,@CustomerId,@OrderDate,@RequiredDate,@ShipName, @TotalPrice, @Action";
+                var execquery = db.Database.ExecuteSqlCommand(sql2, new SqlParameter("@OrderId", xOrderNo)
+                                                                 , new SqlParameter("@CustomerId", data.CustomerId)
+                                                                 , new SqlParameter("@OrderDate", data.OrderDate)
+                                                                 , new SqlParameter("@RequiredDate", data.RequiredDate)
+                                                                 , new SqlParameter("@ShipName", data.ShipName)
+                                                                 , new SqlParameter("@TotalPrice", data.TotalPrice)
+                                                                 , new SqlParameter("@Action",data.Action));
+                if (data.Action== "UPDATE")
+                {
+                    var sql4 = "Delete From [dbo].[OrderDetail] where OrderId =@OrderId";
+                    var execquery4 = db.Database.ExecuteSqlCommand(sql4, new SqlParameter("@OrderId",xOrderNo));
+                }
+                //insert/update Order Detail  
+                for (int i = 0; i < data.orderList.Count; i++)
+                {
+                    var sql3 = "exec Sp_OrderDetail_InsetUpdate  @OrderId, @Productid, @Qty, @SubTotal ";
+                    var execquery3 = db.Database.ExecuteSqlCommand(sql3, new SqlParameter("@OrderId", xOrderNo)
+                                                                     , new SqlParameter("@Productid", data.orderList[i].ProductId)
+                                                                     , new SqlParameter("@Qty", data.orderList[i].Qty)
+                                                                     , new SqlParameter("@SubTotal", data.orderList[i].SubTotal));
+                }
+               
 
                 result = "success";
             }
