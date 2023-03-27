@@ -104,19 +104,9 @@ namespace OrderApp.Controllers
             //ViewData["listCustomer"] = listCustomer;
             return Json(listCustomer, JsonRequestBehavior.AllowGet);
         }
-        //public JsonResult GetAllProduct()
-        //{
-        //    var sql = @"select ProductId,ProductName,Cast(Price as varchar) Price from [dbo].[Product]";
-        //    var getData = db.Database.SqlQuery<Product>(sql).ToList();
-        //    return Json(getData, JsonRequestBehavior.AllowGet);
-        //}
-        public JsonResult SaveData(OrderVm data)
+        public JsonResult GenerateOrderId(string customerId)
         {
-            string result = string.Empty;
-            try
-            {
-                //Generate OrderId
-                var sql = @"SELECT top 1 cast(isnull(right(OrderId,4),'0') as int) OrderNo
+            var sql = @"SELECT top 1 cast(isnull(right(OrderId,4),'0') as int) OrderNo
                                  , OrderId
                                  ,Cast(OrderDate as varchar) OrderDate
                                  ,CustomerId
@@ -124,31 +114,33 @@ namespace OrderApp.Controllers
                                  ,ShipName
                                  ,cast(TotalPrice as varchar) TotalPrice
                              FROM [dbo].[OrderHeader] order by OrderId desc";
-                var dataOrder = db.Database.SqlQuery<OrderHeader>(sql).ToList();
-                var vOrderno = 0; ;
-                if (dataOrder.Count<1)
-                {
-                    vOrderno = 0;
-                }
-                else
-                {
-                    vOrderno = dataOrder[0].OrderNo;
-                }
-                //var vOrderno = dataOrder[0].OrderNo;
-                var sequence = vOrderno + 1;
-                double bil = (double)sequence / (double)1000;
-                string xOrderNo = "";
-                if (data.Action=="ADD")
-                {
-                     xOrderNo = data.CustomerId + bil.ToString().Replace(".", "");
-                }
-                else
-                {
-                    xOrderNo = data.OrderId;
-                }
+            var dataOrder = db.Database.SqlQuery<OrderHeader>(sql).ToList();
+            var vOrderno = 0; ;
+            if (dataOrder.Count < 1)
+            {
+                vOrderno = 0;
+            }
+            else
+            {
+                vOrderno = dataOrder[0].OrderNo;
+            }
+            //var vOrderno = dataOrder[0].OrderNo;
+            var sequence = vOrderno + 1;
+            double bil = (double)sequence / (double)1000;
+            string dataOrderId = customerId + bil.ToString().Replace(".", "");
+            
+
+            return Json(dataOrderId, JsonRequestBehavior.AllowGet);
+        }
+        public JsonResult SaveData(OrderVm data)
+        {
+            string result = string.Empty;
+            try
+            {
+                
                 //insert/update Order Header
                 var sql2 = "exec Sp_OrderHeader_InsetUpdate @OrderId,@CustomerId,@OrderDate,@RequiredDate,@ShipName, @TotalPrice, @Action";
-                var execquery = db.Database.ExecuteSqlCommand(sql2, new SqlParameter("@OrderId", xOrderNo)
+                var execquery = db.Database.ExecuteSqlCommand(sql2, new SqlParameter("@OrderId", data.OrderId)
                                                                  , new SqlParameter("@CustomerId", data.CustomerId)
                                                                  , new SqlParameter("@OrderDate", data.OrderDate)
                                                                  , new SqlParameter("@RequiredDate", data.RequiredDate)
@@ -158,13 +150,13 @@ namespace OrderApp.Controllers
                 if (data.Action== "UPDATE")
                 {
                     var sql4 = "Delete From [dbo].[OrderDetail] where OrderId =@OrderId";
-                    var execquery4 = db.Database.ExecuteSqlCommand(sql4, new SqlParameter("@OrderId",xOrderNo));
+                    var execquery4 = db.Database.ExecuteSqlCommand(sql4, new SqlParameter("@OrderId",data.OrderId));
                 }
                 //insert/update Order Detail  
                 for (int i = 0; i < data.orderList.Count; i++)
                 {
                     var sql3 = "exec Sp_OrderDetail_InsetUpdate  @OrderId, @Productid, @Qty, @SubTotal ";
-                    var execquery3 = db.Database.ExecuteSqlCommand(sql3, new SqlParameter("@OrderId", xOrderNo)
+                    var execquery3 = db.Database.ExecuteSqlCommand(sql3, new SqlParameter("@OrderId", data.OrderId)
                                                                      , new SqlParameter("@Productid", data.orderList[i].ProductId)
                                                                      , new SqlParameter("@Qty", data.orderList[i].Qty)
                                                                      , new SqlParameter("@SubTotal", data.orderList[i].SubTotal));

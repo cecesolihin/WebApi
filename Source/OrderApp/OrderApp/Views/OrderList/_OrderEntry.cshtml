@@ -41,7 +41,7 @@
 
                                 <div class="form-group">
                                     <label class="col-md-4"> Order Id</label>
-                                    <input type="text" id="ordOrderId" class="form-control" style="width:180px" />
+                                    <input type="text" id="ordOrderId" class="form-control" readonly style="width:180px" />
                                 </div>
                                 <div class="form-group">
                                     <label class="col-md-4"> Order Date</label>
@@ -287,8 +287,9 @@
         });
     }
     function getCustomer() {
+      
         var cutomerId = $('#ordCustomerId').val();
-        return $.ajax({
+         $.ajax({
             //url: "/OrderList/GetCustomerById",
             url: "/api/Customers/Customerbyid?Customerid=" + cutomerId,
             type: "GET",
@@ -298,6 +299,16 @@
                 $('#ordCompanyName').val(data[0].CustomerName);
                 $('#ordAddress').val(data[0].Address);
                 $('#ordCity').val(data[0].City);
+            }
+        });
+
+         $.ajax({
+            url: "/OrderList/GenerateOrderId",
+            type: "GET",
+            data: { customerId: cutomerId},
+            success: function (dataOrderId) {
+               
+                $('#ordOrderId').val(dataOrderId);
             }
         });
     }

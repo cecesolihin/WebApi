@@ -6,33 +6,107 @@
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #header {
+            background-color: #5ABDC8;
+            height: 60px;
+            margin-left: 0px;
+            padding: 5px;
+        }
+
+        #subheader {
+            background-color: none;
+            height: 30px;
+            margin-left: 0px;
+            padding: 5px;
+            border-bottom: none;
+        }
+
+        .front, .back {
+            width: 400px;
+            height: 100%;
+            top: 0;
+            left: 0;
+            font-size: 16px;
+            background: #5ABDC8;
+            color: white;
+            size: 16px;
+            font-family: 'Bookman Old Style';
+        }
+
+        .wr {
+            color: #5ABDC8;
+        }
+    </style>
+
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+    <div class="">
+        <div id="header">
+            <div class="row">
+                <div class="col-xs-12 col-sm-5 col-md-5">
+                    <div id="header1">
+                        <span class="hidden-xs front">Order List</span>
+
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-7 col-md-7">
+
+                    <div id="" class="text-right">
+                        <a href="/Account/Login" style="color:red; background-color:#5ABDC8"><i class="fa fa-sign-out">&nbsp;Sign Out</i></a>
+
+
+                    </div>
+
+                </div>
             </div>
-            @*<div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-            </div>*@
         </div>
+
+        <div class="text-right" id="subheader">
+            <span class="dropdown navbar-right hidden-xs">
+                
+            </span>
+            <span class="dropdown navbar-right hidden-xs">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="background-color: #5ABDC8 !important;color:white">
+                    <i class="fa fa-cog fa-fw" style="background-color: #5ABDC8;"></i>&nbsp;<b class="caret"></b> &nbsp;Order List
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="/OrderList/Index"><i class="fa fa-th-large fa-fw wr"></i>&nbsp;<text class="wr"><text class="wr">Order List</text></a>
+                    </li>
+                </ul>
+            </span>
+
+            <span class="dropdown navbar-right hidden-xs">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="background-color: #5ABDC8;color: white;">
+                    <i class="fa fa-th-large fa-fw" style="background-color: #5ABDC8;"></i>&nbsp;<b class="caret"></b> &nbsp;Master Maintenance
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a href="/Customer/Index"><i class="fa fa-delicious fa-fw wr"></i>&nbsp;<text class="wr"> Customer</text></a>
+                    </li>
+                    <li>
+                        <a href="/Product/Index"><i class="fa fa-delicious fa-fw wr"></i>&nbsp;<text class="wr"> Product</text></a>
+                    </li>
+
+                </ul>
+            </span>
+
+
+
+
+        </div>
+
     </div>
+
     <div class="container body-content">
         @RenderBody()
-        @*<hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>*@
+
     </div>
 
     @Scripts.Render("~/bundles/jquery")
